@@ -97,7 +97,7 @@ RUN echo "apc.enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
 RUN rm -rf /usr/src/*
 
 # Create dockerizer user
-RUN useradd -ms /bin/zsh dockerizer
+RUN useradd -ms /bin/bash dockerizer
 RUN groupmod --gid 1000 dockerizer && usermod --uid 1000 --gid 1000 dockerizer
 
 RUN chmod +x /usr/local/bin/docker-php-entrypoint

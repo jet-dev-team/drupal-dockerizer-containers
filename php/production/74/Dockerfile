@@ -45,7 +45,6 @@ RUN pecl channel-update pecl.php.net
 
 # Install pecl modules
 RUN pecl install \
-      xdebug-2.8.0 \
       imagick \
       memcached \
       apcu-5.1.19
@@ -55,8 +54,7 @@ RUN git clone https://github.com/php/pecl-php-uploadprogress/ /usr/src/php/ext/u
   docker-php-ext-configure uploadprogress
 
 # Enable php modules
-RUN docker-php-ext-enable xdebug && \
-  docker-php-ext-enable memcached && \
+RUN docker-php-ext-enable memcached && \
   docker-php-ext-enable imagick && \
   docker-php-ext-enable apcu
 
@@ -90,8 +88,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Disable memory limit
 RUN echo "memory_limit = -1" >> /usr/local/etc/php/conf.d/memory_limit.ini
 
-# Enable apcu in cofig
-RUN echo "apc.enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
+# Set memory limit
+RUN echo "memory_limit = 512M" >> /usr/local/etc/php/conf.d/memory_limit.ini
 
 # Cleanup
 RUN rm -rf /usr/src/*
@@ -109,7 +107,3 @@ RUN chmod 0440 /etc/sudoers.d/dockerizer
 
 ENV APACHE_RUN_USER dockerizer
 ENV APACHE_RUN_GROUP dockerizer
-
-USER dockerizer
-
-

@@ -1,13 +1,15 @@
-FROM php:7.4-apache
+FROM php:8.0-apache
 
 # Surpresses debconf complaints of trying to install apt packages interactively
 # https://github.com/moby/moby/issues/4032#issuecomment-192327844
+
+# Upload progress not work in php-8.0 for now.
 
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Install useful tools and install important libaries
 RUN apt-get -y update && \
-  apt-get -y --no-install-recommends --fix-missing install zsh git vim nano wget sudo\
+  apt-get -y --no-install-recommends --fix-missing install vim nano wget sudo\
   libfreetype6-dev \
   libjpeg62-turbo-dev \
   libpng-dev \
@@ -45,34 +47,24 @@ RUN pecl channel-update pecl.php.net
 
 # Install pecl modules
 RUN pecl install \
-      xdebug-2.8.0 \
-      imagick \
+      xdebug \
       memcached \
-      apcu-5.1.19
+      apcu
 
-# Configure uploadprogress
-RUN git clone https://github.com/php/pecl-php-uploadprogress/ /usr/src/php/ext/uploadprogress/ && \
-  docker-php-ext-configure uploadprogress
+RUN git clone https://github.com/Imagick/imagick/ /usr/src/php/ext/imagick/ && \
+  docker-php-ext-configure imagick
 
 # Enable php modules
 RUN docker-php-ext-enable xdebug && \
   docker-php-ext-enable memcached && \
-  docker-php-ext-enable imagick && \
   docker-php-ext-enable apcu
 
 # Install php modulues
 RUN docker-php-ext-install pdo_mysql && \
   docker-php-ext-install opcache && \
-  docker-php-ext-install uploadprogress && \
-  docker-php-ext-install pdo_sqlite && \
+  docker-php-ext-install imagick && \
   docker-php-ext-install soap && \
   docker-php-ext-install mysqli && \
-  docker-php-ext-install curl && \
-  docker-php-ext-install tokenizer && \
-  docker-php-ext-install json && \
-  docker-php-ext-install zip && \
-  docker-php-ext-install -j$(nproc) intl && \
-  docker-php-ext-install mbstring && \
   docker-php-ext-install gettext && \
   docker-php-ext-install exif
 
@@ -111,5 +103,3 @@ ENV APACHE_RUN_USER dockerizer
 ENV APACHE_RUN_GROUP dockerizer
 
 USER dockerizer
-
-
