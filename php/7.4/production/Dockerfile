@@ -85,9 +85,6 @@ RUN a2enmod ssl
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Disable memory limit
-RUN echo "memory_limit = -1" >> /usr/local/etc/php/conf.d/memory_limit.ini
-
 # Set memory limit
 RUN echo "memory_limit = 512M" >> /usr/local/etc/php/conf.d/memory_limit.ini
 
